@@ -17,9 +17,12 @@ const loading = document.getElementById("loading");
 const errorBox = document.getElementById("errorBox");
 const chatBox = document.getElementById("chatBox");
 const roundCount = document.getElementById("roundCount");
+const charCount = document.getElementById("charCount");
 
 sendBtn.addEventListener("click", sendMessage);
 clearBtn.addEventListener("click", clearChat);
+
+userInput.addEventListener("input", updateCharCount);
 
 userInput.addEventListener("keydown", (event) => {
   if (event.ctrlKey && event.key === "Enter") {
@@ -45,6 +48,7 @@ async function sendMessage() {
 
   messages.push({ role: "user", content });
   userInput.value = "";
+  updateCharCount();
   renderChat();
 
   setLoading(true);
@@ -96,6 +100,7 @@ function clearChat() {
     }
   ];
   userInput.value = "";
+  updateCharCount();
   hideError();
   renderChat();
 }
@@ -111,18 +116,59 @@ function renderChat() {
   }
 
   chatBox.innerHTML = visibleMessages
-    .map((message) => {
+    .map((message, index) => {
       const roleName = message.role === "user" ? "你" : "AI助手";
+      const copyButton = message.role === "assistant"
+        ? `<button class="copy-btn" onclick="copyMessage(${index})">复制回复</button>`
+        : "";
       return `
         <div class="message ${message.role}">
           <span class="role">${roleName}</span>
           ${escapeHtml(message.content)}
+          ${copyButton}
         </div>
       `;
     })
     .join("");
 
   chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function insertPrompt(promptText) {
+  const current = userInput.value.trim();
+  userInput.value = current ? `${current}\n\n${promptText}` : promptText;
+  userInput.focus();
+  updateCharCount();
+}
+
+function fillExample() {
+  userInput.value =
+    "人工智能是研究如何让机器模拟人类智能的学科。机器学习是人工智能的重要分支，主要通过数据训练模型，使模型具备预测和分类能力。神经网络由输入层、隐藏层和输出层组成，通过前向传播计算结果，通过反向传播调整参数。常见应用包括图像识别、语音识别、自然语言处理和智能推荐。请帮我整理这段笔记。";
+  updateCharCount();
+  scrollToInput();
+}
+
+function scrollToInput() {
+  document.getElementById("inputArea").scrollIntoView({ behavior: "smooth" });
+  setTimeout(() => userInput.focus(), 350);
+}
+
+async function copyMessage(index) {
+  const visibleMessages = messages.filter((message) => message.role !== "system");
+  const text = visibleMessages[index]?.content || "";
+  if (!text) return;
+
+  try {
+    await navigator.clipboard.writeText(text);
+    showError("已复制 AI 回复内容。");
+    setTimeout(hideError, 1200);
+  } catch {
+    showError("复制失败，请手动选中文本复制。");
+  }
+}
+
+function updateCharCount() {
+  charCount.textContent = `${userInput.value.length} 字`;
 }
 
 function setLoading(isLoading) {
@@ -151,3 +197,4 @@ function escapeHtml(text) {
 }
 
 renderChat();
+updateCharCount();

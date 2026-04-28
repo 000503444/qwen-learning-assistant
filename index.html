@@ -7,48 +7,108 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
   <main class="app">
     <section class="hero">
-      <div>
-        <p class="tag">Web LLM 应用实践</p>
+      <div class="hero-content">
+        <p class="tag">Web LLM 应用实践 · qwen3.6-plus</p>
         <h1>AI学习笔记整理助手</h1>
         <p class="desc">
-          输入课程笔记或学习内容，助手可以生成摘要、知识点、复习问题，并支持继续修改，例如“更简短”“改成表格”“更适合考试复习”。
+          输入课程笔记、课堂内容或复习资料，系统可自动生成摘要、知识点、复习问题，并支持继续提出修改建议。
         </p>
+        <div class="hero-actions">
+          <button class="ghost-btn" onclick="fillExample()">填入示例笔记</button>
+          <button class="ghost-btn" onclick="scrollToInput()">开始整理</button>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="panel-line"></div>
+        <h3>支持能力</h3>
+        <ul>
+          <li>课程笔记摘要</li>
+          <li>知识点提炼</li>
+          <li>考试复习题生成</li>
+          <li>多轮修改与追问</li>
+        </ul>
       </div>
     </section>
 
-    <section class="card">
-      <label for="apiKey">阿里云百炼 API Key</label>
-      <input id="apiKey" type="password" placeholder="请输入你的 API Key，本页面不会保存或上传到其他地方" />
-      <p class="hint">说明：API Key 仅保存在当前浏览器页面内存中，请勿把 Key 写进代码或截图提交。</p>
+    <section class="features">
+      <article>
+        <span>01</span>
+        <h3>结构化整理</h3>
+        <p>把杂乱笔记整理为摘要、要点、表格和复习清单。</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h3>多轮优化</h3>
+        <p>支持继续输入“更简短”“改成表格”“适合考试复习”。</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h3>密钥安全</h3>
+        <p>API Key 由用户手动输入，不写入任何提交文件。</p>
+      </article>
     </section>
 
-    <section class="card">
-      <label for="userInput">请输入学习笔记 / 修改建议</label>
-      <textarea id="userInput" placeholder="例如：请把这段笔记整理成摘要、知识点和复习题……"></textarea>
-
-      <div class="actions">
-        <button id="sendBtn">生成 / 继续修改</button>
-        <button id="clearBtn" class="secondary">清空对话</button>
+    <section class="card key-card">
+      <div>
+        <label for="apiKey">阿里云百炼 API Key</label>
+        <p class="hint">仅在当前页面调用接口时使用，不会写入代码或公开展示。</p>
       </div>
-
-      <div id="loading" class="loading hidden">模型正在思考中，请稍候……</div>
-      <div id="errorBox" class="error hidden"></div>
+      <input id="apiKey" type="password" placeholder="请输入你的 API Key" />
     </section>
 
-    <section class="card">
-      <div class="chat-header">
-        <h2>对话记录</h2>
-        <span id="roundCount">0 轮对话</span>
-      </div>
-      <div id="chatBox" class="chat-box">
-        <div class="empty">还没有对话。请输入笔记后点击“生成 / 继续修改”。</div>
-      </div>
+    <section id="inputArea" class="workspace">
+      <section class="card input-card">
+        <div class="section-title">
+          <div>
+            <h2>输入内容</h2>
+            <p>可以输入原始笔记，也可以输入后续修改建议。</p>
+          </div>
+          <span id="charCount">0 字</span>
+        </div>
+
+        <textarea id="userInput" placeholder="例如：请把这段人工智能课程笔记整理成摘要、知识点和复习题……"></textarea>
+
+        <div class="quick-prompts">
+          <button onclick="insertPrompt('请整理成摘要、知识点和复习题。')">摘要+知识点</button>
+          <button onclick="insertPrompt('请改成表格形式。')">改成表格</button>
+          <button onclick="insertPrompt('请更适合期末考试复习。')">考试复习版</button>
+          <button onclick="insertPrompt('请用更简洁的语言重新整理。')">更简洁</button>
+        </div>
+
+        <div class="actions">
+          <button id="sendBtn">生成 / 继续修改</button>
+          <button id="clearBtn" class="secondary">清空对话</button>
+        </div>
+
+        <div id="loading" class="loading hidden">
+          <span class="spinner"></span>
+          模型正在整理中，请稍候……
+        </div>
+        <div id="errorBox" class="error hidden"></div>
+      </section>
+
+      <section class="card chat-card">
+        <div class="chat-header">
+          <div>
+            <h2>对话记录</h2>
+            <p>系统会保留本轮历史，实现连续上下文理解。</p>
+          </div>
+          <span id="roundCount">0 轮对话</span>
+        </div>
+        <div id="chatBox" class="chat-box">
+          <div class="empty">还没有对话。请输入笔记后点击“生成 / 继续修改”。</div>
+        </div>
+      </section>
     </section>
 
     <footer>
-      <p>模型：qwen3.6-plus ｜ 接口：阿里云百炼 OpenAI 兼容接口 ｜ 纯前端静态网页</p>
+      <p>纯前端静态网页 · HTML + CSS + JavaScript · 模型：qwen3.6-plus · 支持 GitHub Pages 部署</p>
     </footer>
   </main>
 
