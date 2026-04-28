@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI学习笔记整理助手</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div>
+        <p class="tag">Web LLM 应用实践</p>
+        <h1>AI学习笔记整理助手</h1>
+        <p class="desc">
+          输入课程笔记或学习内容，助手可以生成摘要、知识点、复习问题，并支持继续修改，例如“更简短”“改成表格”“更适合考试复习”。
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <label for="apiKey">阿里云百炼 API Key</label>
+      <input id="apiKey" type="password" placeholder="请输入你的 API Key，本页面不会保存或上传到其他地方" />
+      <p class="hint">说明：API Key 仅保存在当前浏览器页面内存中，请勿把 Key 写进代码或截图提交。</p>
+    </section>
+
+    <section class="card">
+      <label for="userInput">请输入学习笔记 / 修改建议</label>
+      <textarea id="userInput" placeholder="例如：请把这段笔记整理成摘要、知识点和复习题……"></textarea>
+
+      <div class="actions">
+        <button id="sendBtn">生成 / 继续修改</button>
+        <button id="clearBtn" class="secondary">清空对话</button>
+      </div>
+
+      <div id="loading" class="loading hidden">模型正在思考中，请稍候……</div>
+      <div id="errorBox" class="error hidden"></div>
+    </section>
+
+    <section class="card">
+      <div class="chat-header">
+        <h2>对话记录</h2>
+        <span id="roundCount">0 轮对话</span>
+      </div>
+      <div id="chatBox" class="chat-box">
+        <div class="empty">还没有对话。请输入笔记后点击“生成 / 继续修改”。</div>
+      </div>
+    </section>
+
+    <footer>
+      <p>模型：qwen3.6-plus ｜ 接口：阿里云百炼 OpenAI 兼容接口 ｜ 纯前端静态网页</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
