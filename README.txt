@@ -1,4 +1,4 @@
-AI学习笔记整理助手（优化版）
+AI学习笔记整理助手
 
 一、项目说明
 本项目是一个纯前端 Web LLM 应用，使用 HTML + CSS + JavaScript 编写。
