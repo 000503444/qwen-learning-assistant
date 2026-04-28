@@ -37,4 +37,4 @@ README.txt    运行说明
 五、密钥安全说明
 本项目不会在代码中保存 API Key。
 API Key 只在当前浏览器页面中使用，不会写入 index.html、style.css 或 script.js。
-提交 GitHub 仓库前，请确认没有上传任何包含密钥的截图或文件。
+
