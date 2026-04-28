@@ -5,7 +5,7 @@ let messages = [
   {
     role: "system",
     content:
-      "你是一个中文学习笔记整理助手。你需要帮助用户把课程笔记整理成摘要、知识点、复习问题、表格或考试复习版。回答要清晰、结构化、适合学生复习。"
+      "你是一个中文学习笔记整理助手。你需要帮助用户把课程笔记整理成摘要、知识点、复习问题、表格或考试复习版。回答要清晰、结构化、适合学生复习。用户要求表格时，请使用标准 Markdown 表格格式。"
   }
 ];
 
@@ -41,6 +41,11 @@ async function sendMessage() {
     return;
   }
 
+  if (!apiKey.startsWith("sk-")) {
+    showError("请使用阿里云百炼 DashScope 的 sk- 开头 API Key，不要使用 RAM AccessKeyId/Secret。");
+    return;
+  }
+
   if (!content) {
     showError("请输入学习笔记、问题或修改建议。");
     return;
@@ -54,6 +59,8 @@ async function sendMessage() {
   setLoading(true);
 
   try {
+    const recentMessages = [messages[0], ...messages.slice(-8)];
+
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -62,8 +69,9 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         model: MODEL_NAME,
-        messages: messages,
-        temperature: 0.7
+        messages: recentMessages,
+        temperature: 0.6,
+        max_tokens: 800
       })
     });
 
@@ -96,7 +104,7 @@ function clearChat() {
     {
       role: "system",
       content:
-        "你是一个中文学习笔记整理助手。你需要帮助用户把课程笔记整理成摘要、知识点、复习问题、表格或考试复习版。回答要清晰、结构化、适合学生复习。"
+        "你是一个中文学习笔记整理助手。你需要帮助用户把课程笔记整理成摘要、知识点、复习问题、表格或考试复习版。回答要清晰、结构化、适合学生复习。用户要求表格时，请使用标准 Markdown 表格格式。"
     }
   ];
   userInput.value = "";
@@ -118,13 +126,16 @@ function renderChat() {
   chatBox.innerHTML = visibleMessages
     .map((message, index) => {
       const roleName = message.role === "user" ? "你" : "AI助手";
+      const safeContent = message.role === "assistant"
+        ? renderMarkdown(message.content)
+        : escapeHtml(message.content).replaceAll("\n", "<br>");
       const copyButton = message.role === "assistant"
         ? `<button class="copy-btn" onclick="copyMessage(${index})">复制回复</button>`
         : "";
       return `
         <div class="message ${message.role}">
           <span class="role">${roleName}</span>
-          ${escapeHtml(message.content)}
+          <div class="markdown-body">${safeContent}</div>
           ${copyButton}
         </div>
       `;
@@ -132,6 +143,17 @@ function renderChat() {
     .join("");
 
   chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function renderMarkdown(text) {
+  if (window.marked) {
+    marked.setOptions({
+      breaks: true,
+      gfm: true
+    });
+    return marked.parse(text);
+  }
+  return escapeHtml(text).replaceAll("\n", "<br>");
 }
 
 function insertPrompt(promptText) {

@@ -59,7 +59,7 @@
         <label for="apiKey">阿里云百炼 API Key</label>
         <p class="hint">仅在当前页面调用接口时使用，不会写入代码或公开展示。</p>
       </div>
-      <input id="apiKey" type="password" placeholder="请输入你的 API Key" />
+      <input id="apiKey" type="password" placeholder="请输入 sk- 开头的 API Key" />
     </section>
 
     <section id="inputArea" class="workspace">
@@ -76,7 +76,7 @@
 
         <div class="quick-prompts">
           <button onclick="insertPrompt('请整理成摘要、知识点和复习题。')">摘要+知识点</button>
-          <button onclick="insertPrompt('请改成表格形式。')">改成表格</button>
+          <button onclick="insertPrompt('请请用 Markdown 表格输出，列包括：模块、核心内容、考点/复习提示。')">改成表格</button>
           <button onclick="insertPrompt('请更适合期末考试复习。')">考试复习版</button>
           <button onclick="insertPrompt('请用更简洁的语言重新整理。')">更简洁</button>
         </div>
@@ -112,6 +112,7 @@
     </footer>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
